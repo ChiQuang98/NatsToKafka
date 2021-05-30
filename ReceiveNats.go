@@ -1,21 +1,61 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/nats-io/nats.go"
+	"github.com/segmentio/kafka-go"
 	"log"
 	"time"
 )
+type MessageNats struct {
+	IdChannel string
+	MessageData string
+}
+func workerKafka(result chan MessageNats,ks chan bool){
+	// to consume messages
+	for{
+		select{
+		case msgNats:=<-result:
+			//topic := "my-topic"
 
-func worker(jobs chan string, worknumber int, result chan string,ec *nats.EncodedConn,ks chan bool) {
+			topic := msgNats.IdChannel
+			partition := 0
+			conn, err := kafka.DialLeader(context.Background(), "tcp", "192.168.3.129:9092", topic, partition)
+			if err != nil {
+				log.Fatal("failed to dial leader:", err)
+			}
+			conn.SetWriteDeadline(time.Now().Add(10*time.Second))
+			_, err = conn.WriteMessages(
+				kafka.Message{Value: []byte(msgNats.MessageData)},
+			)
+			if err != nil {
+				log.Fatal("failed to write messages:", err)
+			}
+			fmt.Println("Tranfered data to topic %s kafka",msgNats.IdChannel)
+			if err := conn.Close(); err != nil {
+				log.Fatal("failed to close writer:", err)
+			}
+		case <-ks:
+			fmt.Println("Worker halted,: ")
+			return
+		}
+	}
+
+}
+func worker(jobs chan string, worknumber int, result chan MessageNats,ec *nats.EncodedConn,ks chan bool) {
 	for true{
 		select {
 		case job := <- jobs:
 			if _, err := ec.QueueSubscribe(job,"worker", func(m *nats.Msg) {
-				ec.Flush()
+				//ec.Flush()
 				//wg.Done()
-				fmt.Println("Nhan duoc rui",string(m.Data))
-				result <- string(m.Data)
+				//fmt.Println("Dât",string(m.Data))
+				result <- MessageNats{
+					IdChannel:   job,
+					MessageData: string(m.Data),
+				}
+				fmt.Println("Received data from topic %s Nats",job)
 			}); err != nil {
 				log.Fatal(err)
 			}
@@ -30,6 +70,7 @@ func ConnectNats()  {
 //https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-20-04
 }
 func main() {
+	//Nats
 	nc, err := nats.Connect("192.168.3.129:4222")
 	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
 	if err != nil {
@@ -40,7 +81,7 @@ func main() {
 	jobs := make(chan string)
 
 	// done channel lấy ra kết quả của jobs
-	result := make(chan string)
+	result := make(chan MessageNats)
 	// số lượng worker trong pool
 	//vi` moi worker lam viec khong ket thuc, phai lang ng  he lien tuc nen so luong worker bang so luong channel
 	for {
@@ -49,6 +90,7 @@ func main() {
 		numberOfWorkers :=1
 		for i := 0; i < numberOfWorkers; i++ {
 			go worker(jobs, i, result,ec,killsignal)
+			go workerKafka(result,killsignal)
 		}
 		//for {
 		numberOfJobs := 1
@@ -57,15 +99,15 @@ func main() {
 				jobs <- "channels.86903597-b75e-4a4d-bbfd-17a304714b86"
 			}(j)
 		}
-		go func() {
-			for {
-				select {
-				case resultMsg := <-result:
-					fmt.Println(resultMsg)
-				}
-			}
-		}()
-		time.Sleep(10 * time.Second)
+		//go func() {
+		//	for {
+		//		select {
+		//		case resultMsg := <-result:
+		//			//fmt.Println(resultMsg)
+		//		}
+		//	}
+		//}()
+		time.Sleep(10 * time.Hour)
 		close(killsignal)
 	}
 
