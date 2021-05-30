@@ -4,27 +4,33 @@ import (
 	"fmt"
 	"github.com/nats-io/nats.go"
 	"log"
+	"time"
 )
 
-func worker(jobs chan string, worknumber int, result chan string,nc *nats.Conn) {
-	for channel := range jobs {
-		//fmt.Println("worker", worknumber, "finished job", channel)
-		//for {
-			if _, err := nc.QueueSubscribe(channel,"worker", func(m *nats.Msg) {
+func worker(jobs chan string, worknumber int, result chan string,ec *nats.EncodedConn,ks chan bool) {
+	for true{
+		select {
+		case job := <- jobs:
+			if _, err := ec.QueueSubscribe(job,"worker", func(m *nats.Msg) {
 				//wg.Done()
-				//fmt.Println("Nhan duoc rui",string(m.Data))
+				fmt.Println("Nhan duoc rui",string(m.Data))
 				result <- string(m.Data)
 			}); err != nil {
 				log.Fatal(err)
 			}
-		//}
+		case <-ks:
+			fmt.Println("Worker halted,: ")
+			return
+		}
 	}
+
 }
 func ConnectNats()  {
 
 }
 func main() {
-	nc, err := nats.Connect("10.4.200.61:4222")
+	nc, err := nats.Connect("192.168.3.129:4222")
+	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,29 +42,38 @@ func main() {
 	result := make(chan string)
 	// số lượng worker trong pool
 	//vi` moi worker lam viec khong ket thuc, phai lang nghe lien tuc nen so luong worker bang so luong channel
-	numberOfWorkers :=1
-	for i := 0; i < numberOfWorkers; i++ {
-		go worker(jobs, i, result,nc)
-	}
-	//for {
+	for {
+		killsignal := make(chan bool)
+		fmt.Println("Start")
+		numberOfWorkers :=1
+		for i := 0; i < numberOfWorkers; i++ {
+			go worker(jobs, i, result,ec,killsignal)
+		}
+		//for {
 		numberOfJobs := 1
 		for j := 0; j < numberOfJobs; j++ {
 			go func(j int) {
-				jobs <- "channels.1a56060a-b034-4b65-a3f5-59d12a97d5da"
+				jobs <- "channels.86903597-b75e-4a4d-bbfd-17a304714b86"
 			}(j)
 		}
-		for {
-			select {
+		go func() {
+			for {
+				select {
 				case resultMsg := <-result:
 					fmt.Println(resultMsg)
+				}
 			}
-		}
+		}()
+		time.Sleep(10 * time.Second)
+		close(killsignal)
+	}
+
 		//// chờ nhận đủ kết quả
 		//for c := 0; c < numberOfJobs; c++ {
 		//	fmt.Println(<-result)
 		//}
 		//fmt.Println("DONE SESSION")
-		//time.Sleep(24 * time.Hour)
+
 	//}
 }
 
