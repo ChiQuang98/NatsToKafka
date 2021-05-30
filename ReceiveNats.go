@@ -12,6 +12,7 @@ func worker(jobs chan string, worknumber int, result chan string,ec *nats.Encode
 		select {
 		case job := <- jobs:
 			if _, err := ec.QueueSubscribe(job,"worker", func(m *nats.Msg) {
+				ec.Flush()
 				//wg.Done()
 				fmt.Println("Nhan duoc rui",string(m.Data))
 				result <- string(m.Data)
@@ -26,7 +27,7 @@ func worker(jobs chan string, worknumber int, result chan string,ec *nats.Encode
 
 }
 func ConnectNats()  {
-
+//https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-20-04
 }
 func main() {
 	nc, err := nats.Connect("192.168.3.129:4222")
@@ -41,7 +42,7 @@ func main() {
 	// done channel lấy ra kết quả của jobs
 	result := make(chan string)
 	// số lượng worker trong pool
-	//vi` moi worker lam viec khong ket thuc, phai lang nghe lien tuc nen so luong worker bang so luong channel
+	//vi` moi worker lam viec khong ket thuc, phai lang ng  he lien tuc nen so luong worker bang so luong channel
 	for {
 		killsignal := make(chan bool)
 		fmt.Println("Start")
@@ -68,13 +69,6 @@ func main() {
 		close(killsignal)
 	}
 
-		//// chờ nhận đủ kết quả
-		//for c := 0; c < numberOfJobs; c++ {
-		//	fmt.Println(<-result)
-		//}
-		//fmt.Println("DONE SESSION")
-
-	//}
 }
 
 
