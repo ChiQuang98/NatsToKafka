@@ -11,6 +11,7 @@ import (
 func GetAllChannels() ([]models.Channel,error) {
 	client := &http.Client{}
 	var channels []models.Channel
+
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:8888/api-gw/v1/thing/getall", nil)
 	if err !=nil{
 		return channels,err
