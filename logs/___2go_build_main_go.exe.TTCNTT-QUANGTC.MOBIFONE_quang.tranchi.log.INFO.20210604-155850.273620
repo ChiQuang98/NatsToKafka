@@ -1,0 +1,14 @@
+Log file created at: 2021/06/04 15:58:50
+Running on machine: TTCNTT-QUANGTC
+Binary: Built with gc go1.16.4 for windows/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0604 15:58:50.095053  273620 main.go:130] Connected to Nats Server at 10.16.150.132:4222
+I0604 16:00:23.310073  273620 main.go:84] Received data from topic channels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea Nats
+I0604 16:00:24.235084  273620 main.go:84] Received data from topic channels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea Nats
+I0604 16:00:24.287112  273620 main.go:84] Received data from topic channels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea Nats
+I0604 16:00:27.703111  273620 main.go:84] Received data from topic channels.963f4b95-6a2c-49e4-a300-21d231c0f8c6 Nats
+I0604 16:00:27.935413  273620 main.go:84] Received data from topic channels.963f4b95-6a2c-49e4-a300-21d231c0f8c6 Nats
+I0604 16:00:28.185979  273620 main.go:84] Received data from topic channels.963f4b95-6a2c-49e4-a300-21d231c0f8c6 Nats
+I0604 16:00:28.397313  273620 main.go:84] Received data from topic channels.963f4b95-6a2c-49e4-a300-21d231c0f8c6 Nats
+I0604 16:01:26.846226  273620 main.go:84] Received data from topic channels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea Nats
+I0604 16:01:26.894587  273620 main.go:84] Received data from topic channels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea Nats

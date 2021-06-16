@@ -1,0 +1,56 @@
+Log file created at: 2021/06/03 10:16:04
+Running on machine: TTCNTT-QUANGTC
+Binary: Built with gc go1.16.4 for windows/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0603 10:16:04.664220    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:05.270708    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:05.530586    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:05.762428    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:05.978719    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:06.181786    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:06.412735    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:06.646702    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:06.878406    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:07.099351    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:07.324778    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:07.549369    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:07.813242    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:07.813341    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:08.010479    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:08.271529    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:08.462287    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:08.694612    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:08.910787    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:09.149147    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:09.382179    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:09.606120    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:09.837372    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:10.053491    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:10.265708    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:10.506549    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:10.733614    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:10.933624    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:11.171284    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:11.401412    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:11.626021    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:11.840174    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:12.077332    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:12.297778    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:12.517171    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:12.740767    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:12.978531    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:13.198205    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:13.399619    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:13.617898    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:13.846915    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:14.068420    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:14.292379    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:14.525737    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:14.707571    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:14.928784    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:15.141687    6412 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:16:55.243188    6412 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:16:55.373441    6412 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:16:55.464887    6412 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:19:54.974570    6412 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:19:55.075132    6412 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea

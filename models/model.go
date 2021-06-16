@@ -2,6 +2,15 @@ package models
 
 import "github.com/gogo/protobuf/proto"
 
+type TokenResponse struct {
+	Status int `json:"status"`
+	Code string `json:"code"`
+	Message string `json:"message"`
+}
+type Account struct {
+	Email string `json:"email"`
+	Password string `json:"password"`
+}
 type Channel struct {
 	Id string `json:"id"`
 	Name string `json:"name"`

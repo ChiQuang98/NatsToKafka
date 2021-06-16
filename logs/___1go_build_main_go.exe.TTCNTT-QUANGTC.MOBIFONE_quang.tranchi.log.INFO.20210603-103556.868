@@ -1,0 +1,18 @@
+Log file created at: 2021/06/03 10:35:56
+Running on machine: TTCNTT-QUANGTC
+Binary: Built with gc go1.16.4 for windows/amd64
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I0603 10:35:56.753287     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:35:56.851291     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:36:55.799319     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:36:55.923086     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:36:56.013579     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:37:54.948653     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:37:55.054411     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:39:14.842457     868 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:39:55.543185     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:39:55.635520     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:40:00.544528     868 main.go:79] Received data from topic %s Natschannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
+I0603 10:40:58.249923     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:40:58.372325     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
+I0603 10:40:58.460027     868 main.go:79] Received data from topic %s Natschannels.7b0fa712-3301-44f3-a26d-d5e8dc1b9aea
