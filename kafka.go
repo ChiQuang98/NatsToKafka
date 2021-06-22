@@ -10,19 +10,20 @@ import (
 
 func produce()  {
 	// to produce messages
-	topic := "channels.86903597-b75e-4a4d-bbfd-17a304714b86"
-	partition := 0
+	topic := "TestKafka"
+	partition := 2
 
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "192.168.245.128:9092", topic, partition)
+	conn, err := kafka.DialLeader(context.Background(), "tcp", "10.16.150.138:2181", topic, partition)
 	if err != nil {
 		log.Fatal("failed to dial leader:", err)
 	}
 
 	conn.SetWriteDeadline(time.Now().Add(10*time.Second))
+	
 	_, err = conn.WriteMessages(
 		kafka.Message{Value: []byte("Quang1!")},
-		kafka.Message{Value: []byte("Quang2!")},
-		kafka.Message{Value: []byte("Quang3!")},
+		//kafka.Message{Value: []byte("Quang2!")},
+		//kafka.Message{Value: []byte("Quang3!")},
 	)
 	if err != nil {
 		log.Fatal("failed to write messages:", err)
@@ -34,10 +35,10 @@ func produce()  {
 }
 func  consume()  {
 	// to consume messages
-	topic := "my-topic"
-	partition := 0
+	topic := "QUANGDEPTRAI"
+	partition := 2
 
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "192.168.3.129:9092", topic, partition)
+	conn, err := kafka.DialLeader(context.Background(), "tcp", "10.16.150.138:2181", topic, partition)
 	if err != nil {
 		log.Fatal("failed to dial leader:", err)
 	}
@@ -64,5 +65,5 @@ func  consume()  {
 }
 func main() {
 	produce()
-	//consume()
+	consume()
 }
