@@ -29,7 +29,7 @@ func WorkerKafka(result chan models.MessageNats,ks chan bool){
 			//if err != nil {
 			//	glog.Error("failed to write messages:", err)
 			//}
-			glog.Info("Tranfered data to topic %s kafka ",msgNats.IdChannel)
+			glog.Info("Tranfered data to topic %s kafka",msgNats.IdChannel)
 
 			//if err := conn.Close(); err != nil {
 			//	glog.Error("failed to close writer:", err)

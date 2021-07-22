@@ -1,8 +1,0 @@
-Log file created at: 2021/06/02 15:33:19
-Running on machine: TTCNTT-QUANGTC
-Binary: Built with gc go1.16.4 for windows/amd64
-Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
-I0602 15:33:19.197209    2436 main.go:47] Tranfered data to topic %s kafkachannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
-I0602 15:33:20.392066    2436 main.go:47] Tranfered data to topic %s kafkachannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
-I0602 15:33:21.119292    2436 main.go:47] Tranfered data to topic %s kafkachannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6
-I0602 15:33:21.715928    2436 main.go:47] Tranfered data to topic %s kafkachannels.963f4b95-6a2c-49e4-a300-21d231c0f8c6

@@ -10,6 +10,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"os"
 	"sync"
+	"time"
 )
 func init() {
 	os.Mkdir("./logs", 0777)
@@ -66,7 +67,7 @@ func main() {
 	wg.Wait()
 	fmt.Println(len(channelsAtomic.channels))
 	//Nats
-	nc, err := nats.Connect("10.16.150.132:4222",nats.ErrorHandler(natsErrHandler))
+	nc, err := nats.Connect("10.16.150.132:4222",nats.ErrorHandler(natsErrHandler),nats.PingInterval(20*time.Second), nats.MaxPingsOutstanding(5))
 
 	//ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
 	if err != nil {

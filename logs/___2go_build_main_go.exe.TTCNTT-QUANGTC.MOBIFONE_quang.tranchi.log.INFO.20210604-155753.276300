@@ -1,5 +1,0 @@
-Log file created at: 2021/06/04 15:57:53
-Running on machine: TTCNTT-QUANGTC
-Binary: Built with gc go1.16.4 for windows/amd64
-Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
-I0604 15:57:53.085644  276300 main.go:130] Connected to Nats Server at 10.16.150.132:4222
