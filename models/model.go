@@ -3,17 +3,26 @@ package models
 import "github.com/gogo/protobuf/proto"
 
 type TokenResponse struct {
-	Status int `json:"status"`
-	Code string `json:"code"`
-	Message string `json:"message"`
+	Token string `json:"token"`
 }
 type Account struct {
 	Email string `json:"email"`
 	Password string `json:"password"`
 }
 type Channel struct {
-	Id string `json:"id"`
-	Name string `json:"name"`
+	Channel_id string `json:"channel_id"`
+	Channel_name string `json:"channel_name"`
+	Thing_id string `json:"thing_id"`
+	Thing_key string `json:"thing_key"`
+}
+type ResponseChannel struct {
+	Total int `json:"total"`
+	Offset int `json:"offset"`
+	Limit int `json:"limit"`
+	Order string `json:"order"`
+	Direction string `json:"direction"`
+	Data []Channel `json:"data"`
+
 }
 type MessageNats struct {
 	IdChannel string

@@ -13,11 +13,11 @@ func GetToken() (string,error){
 	//glog.Info("Prepare to repel boarders")
 	client := &http.Client{}
 	account:= models.Account{
-		Email:    "NodeRedUser@mobifone.vn",
+		Email:    "ttcntt@mobifone.vn",
 		Password: "12345678",
 	}
 	jsonAccount, _ := json.Marshal(account)
-	req, err := http.NewRequest(http.MethodPost, "http://localhost:8888/api-gw/v1/user/login", bytes.NewBuffer(jsonAccount))
+	req, err := http.NewRequest(http.MethodPost, "http://10.16.150.132:8010/api-gw/v1/user/login", bytes.NewBuffer(jsonAccount))
 	if err !=nil{
 		fmt.Println("Fail request Set group MCU TTTM")
 		//return http.StatusNotAcceptable,nil
@@ -37,9 +37,10 @@ func GetToken() (string,error){
 	err = json.Unmarshal(data,&responseToken)
 	if err !=nil{
 		fmt.Println("Fail request Set group MCU TTTM")
+		fmt.Println(err.Error())
 		//return http.StatusNotAcceptable,nil
 		return "",err
 	}
-	return responseToken.Message,nil
+	return responseToken.Token,nil
 
 }

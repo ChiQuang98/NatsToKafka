@@ -3,17 +3,13 @@ package main
 import (
 	"NatsToKafka/models"
 	"NatsToKafka/utils"
-	"context"
+	"NatsToKafka/workers"
 	"flag"
 	"fmt"
-	"github.com/gogo/protobuf/proto"
 	"github.com/golang/glog"
 	"github.com/nats-io/nats.go"
-	"github.com/segmentio/kafka-go"
 	"os"
 	"sync"
-	"sync/atomic"
-	"time"
 )
 func init() {
 	os.Mkdir("./logs", 0777)
@@ -24,73 +20,6 @@ func init() {
 	glog.MaxSize = 1024 * 1024 * 256
 	flag.Lookup("v").Value.Set(fmt.Sprintf("%d", 8))
 	flag.Parse()
-}
-var total uint64
-
-func workerKafka(result chan models.MessageNats,ks chan bool){
-	// to consume messages
-	for{
-		select{
-		case msgNats:=<-result:
-			//topic := "my-topic"
-
-			topic := msgNats.IdChannel
-			partition := 0
-			conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", topic, partition)
-			if err != nil {
-				glog.Error("failed to dial leader:", err)
-			}
-			//conn.SetWriteDeadline(time.Now().Add(10*time.Second))
-			_, err = conn.WriteMessages(
-				kafka.Message{Value: []byte(msgNats.MessageData)},
-			)
-			if err != nil {
-				glog.Error("failed to write messages:", err)
-			}
-			glog.Info("Tranfered data to topic %s kafka",msgNats.IdChannel)
-
-			if err := conn.Close(); err != nil {
-				glog.Error("failed to close writer:", err)
-			}
-		case <-ks:
-			fmt.Println("Worker halted,: ")
-			return
-		}
-	}
-}
-func workerNats(jobs chan string, worknumber int, result chan models.MessageNats,nc *nats.Conn,ks chan bool,wg *sync.WaitGroup) {
-	defer wg.Done()
-	for true{
-		select {
-		case job := <- jobs:
-			//fmt.Println(job)
-			if _, err := nc.QueueSubscribe(job,job, func(m *nats.Msg) {
-				//wg.Done()
-				//fmt.Println("Dât",string(m.Data))
-				var message models.Message
-				err:=proto.Unmarshal(m.Data,&message)
-				if err == nil{
-					//fmt.Println("=>>>: ",string(message.Payload))
-					//result <- models.MessageNats{
-					//	IdChannel:   job,
-					//	MessageData: string(message.Payload),
-					//}
-					atomic.AddUint64(&total, 1)
-				} else {
-					fmt.Println(err)
-				}
-				//m := interface{}(m.Data)
-				glog.Info(fmt.Sprintf("Received data from topic %s Nats",job))
-				//fmt.Println(string(message.Payload))
-			}); err != nil {
-				glog.Error(err)
-			}
-		case <-ks:
-			fmt.Println("Worker halted,: ")
-			return
-		}
-	}
-
 }
 
 func ConnectNats()  {
@@ -159,29 +88,29 @@ func main() {
 	//numberOfWorkers :=1
 	for i := 0; i < numberOfWorkers; i++ {
 		wg.Add(1)
-		go workerNats(jobs, i, result,nc,killsignal,&wg)
-		//go workerKafka(result,killsignal)
+		go workers.WorkerNats(jobs, i, result,nc,killsignal,&wg)
+		go workers.WorkerKafka(result,killsignal)
 	}
-	//e:=nc.Flush()
-	//if e!=nil{
-	//	glog.Error("Flush error")
-	//}
+	e:=nc.Flush()
+	if e!=nil{
+		glog.Error("Flush error")
+	}
 	//for {
 	numberOfJobs := numberOfWorkers
 	fmt.Println("LEN CHAN: ", numberOfJobs)
 	//numberOfJobs := 1
 	for j := 0; j < numberOfJobs; j++ {
 		go func(j int) {
-			jobs <- "channels."+channelsAtomic.channels[j].Id
-			//fmt.Println("channels."+channels[j].Id)
+			jobs <- "channels."+channelsAtomic.channels[j].Channel_id
+			//fmt.Println("channels."+channelsAtomic.channels[j].Id)
 		}(j)
 	}
-	go func() {
-		for  {
-			fmt.Println("=====Tong cong: ",total)
-			time.Sleep(5*time.Second)
-		}
-	}()
+	//go func() {
+	//	for  {
+	//		fmt.Println("=====Tong cong: ",total)
+	//		time.Sleep(5*time.Second)
+	//	}
+	//}()
 	wg.Wait()
 
 }
