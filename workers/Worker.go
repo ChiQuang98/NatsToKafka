@@ -3,6 +3,7 @@ package workers
 import (
 	"NatsToKafka/models"
 	"NatsToKafka/utils"
+	"encoding/json"
 	"fmt"
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/glog"
@@ -16,24 +17,11 @@ func WorkerKafka(result chan models.MessageNats,ks chan bool){
 	for{
 		select{
 		case msgNats:=<-result:
-			//topic := "my-topic"
-
 			topic := msgNats.IdChannel
-			//partition := 0
-			//conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", topic, partition)
-			//if err != nil {
-			//	glog.Error("failed to dial leader:", err)
-			//}
-			//conn.SetWriteDeadline(time.Now().Add(10*time.Second))
-			utils.PublishMessage(msgNats.MessageData,topic,p)
-			//if err != nil {
-			//	glog.Error("failed to write messages:", err)
-			//}
+			jsonSenMl:= models.JSONSenML{Value: msgNats.MessageData}
+			s,_:=json.Marshal(jsonSenMl)
+			utils.PublishMessage(s,topic,p)
 			glog.Info("Tranfered data to topic %s kafka",msgNats.IdChannel)
-
-			//if err := conn.Close(); err != nil {
-			//	glog.Error("failed to close writer:", err)
-			//}
 		case <-ks:
 			fmt.Println("Worker halted,: ")
 			return
@@ -45,7 +33,7 @@ func WorkerNats(jobs chan string, worknumber int, result chan models.MessageNats
 	for true{
 		select {
 		case job := <- jobs:
-			//fmt.Println(job)
+			fmt.Println(job)
 			if _, err := nc.QueueSubscribe(job,job, func(m *nats.Msg) {
 				//wg.Done()
 				//fmt.Println("Dât",string(m.Data))
@@ -57,14 +45,11 @@ func WorkerNats(jobs chan string, worknumber int, result chan models.MessageNats
 						IdChannel:   job,
 						MessageData: string(message.Payload),
 					}
-					//fmt.Println(string(message.Payload))
-					//atomic.AddUint64(&total, 1)
 				} else {
 					fmt.Println(err)
 				}
-				//m := interface{}(m.Data)
+				println(string(message.Payload))
 				glog.Info(fmt.Sprintf("Received data from topic %s Nats",job))
-				//fmt.Println(string(message.Payload))
 			}); err != nil {
 				glog.Error(err)
 			}

@@ -15,6 +15,9 @@ type Channel struct {
 	Thing_id string `json:"thing_id"`
 	Thing_key string `json:"thing_key"`
 }
+type JSONSenML struct {
+	Value string `json:"value"`
+}
 type ResponseChannel struct {
 	Total int `json:"total"`
 	Offset int `json:"offset"`

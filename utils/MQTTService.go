@@ -12,10 +12,14 @@ func GetProducer() (*kafka.Producer){
 	}
 	return p
 }
-func PublishMessage(value string,topic string,p *kafka.Producer){
+func PublishMessage( value []byte,topic string,p *kafka.Producer){
 	err:=p.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-		Value:          []byte(value),
+		Value:         value,
+		Key: []byte("key_"+topic),
 	}, nil)
-	glog.Error(err)
+	if err!=nil{
+		glog.Error(err)
+	}
 }
+

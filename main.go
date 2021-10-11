@@ -2,7 +2,6 @@ package main
 
 import (
 	"NatsToKafka/models"
-	"NatsToKafka/utils"
 	"NatsToKafka/workers"
 	"flag"
 	"fmt"
@@ -50,30 +49,47 @@ var channelsAtomic struct {
 func main() {
 	var channelsTmp []models.Channel
 	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		var err error
-		channelsAtomic.Lock()
-		channelsTmp, err= utils.GetAllChannels()
-		channelsAtomic.channels = channelsTmp
-		channelsAtomic.Unlock()
-		if err !=nil{
-			glog.Error("fail to get all chanels")
-			return
-		}
-		wg.Done()
-		//time.Sleep(60*time.Second)
-	}()
-	wg.Wait()
+
+	//================
+	//wg.Add(1)
+	//go func() {
+	//	var err error
+	//	channelsAtomic.Lock()
+	//	channelsTmp, err= utils.GetAllChannels()
+	//	channelsAtomic.channels = channelsTmp
+	//	channelsAtomic.Unlock()
+	//	if err !=nil{
+	//		glog.Error("fail to get all chanels")
+	//		return
+	//	}
+	//	wg.Done()
+	//	//time.Sleep(60*time.Second)
+	//}()
+	//wg.Wait()
+	//=======================
+
+	channelsTmp = append(channelsTmp,models.Channel{
+		Channel_id:   "ee92ff10-6625-4f4d-8186-0139e49c4569",
+		Channel_name: "TestNatsQuang",
+		Thing_id:     "2ec068ef-2e27-40e3-b70d-eb830f0a9eed",
+		Thing_key:    "0a341d2c-c61d-4286-bb2b-1d38540783be",
+	})
+	channelsAtomic.channels = channelsTmp
 	fmt.Println(len(channelsAtomic.channels))
 	//Nats
+	//servers := []string{"aiot-app01:31422", "aiot-app02:31422", "aiot-app03:31422"}
+	//servers := []string{"10.16.150.138:31422", "10.16.150.139:31422", "10.16.150.140:31422"}
 	nc, err := nats.Connect("10.16.150.132:4222",nats.ErrorHandler(natsErrHandler),nats.PingInterval(20*time.Second), nats.MaxPingsOutstanding(5))
 
 	//ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
 	if err != nil {
 		glog.Error(err)
 	} else {
-		glog.Info(fmt.Sprintf("Connected to Nats Server at %s","10.16.150.132:4222"))
+		glog.Info(fmt.Sprintf("Connected to Nats Cluster Server at %s","10.16.150.138,139,140:4222"))
+	}
+	e:=nc.Flush()
+	if e!=nil{
+		glog.Error("Flush error")
 	}
 	defer nc.Close()
 	// queue of jobs
@@ -92,26 +108,14 @@ func main() {
 		go workers.WorkerNats(jobs, i, result,nc,killsignal,&wg)
 		go workers.WorkerKafka(result,killsignal)
 	}
-	e:=nc.Flush()
-	if e!=nil{
-		glog.Error("Flush error")
-	}
-	//for {
 	numberOfJobs := numberOfWorkers
 	fmt.Println("LEN CHAN: ", numberOfJobs)
 	//numberOfJobs := 1
 	for j := 0; j < numberOfJobs; j++ {
 		go func(j int) {
 			jobs <- "channels."+channelsAtomic.channels[j].Channel_id
-			//fmt.Println("channels."+channelsAtomic.channels[j].Id)
 		}(j)
 	}
-	//go func() {
-	//	for  {
-	//		fmt.Println("=====Tong cong: ",total)
-	//		time.Sleep(5*time.Second)
-	//	}
-	//}()
 	wg.Wait()
 
 }
