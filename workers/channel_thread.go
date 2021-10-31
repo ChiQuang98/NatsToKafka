@@ -1,13 +1,13 @@
 package workers
 
 import "NatsToKafka/models"
-var Jobs chan string
+var JobsChannelCfg chan models.AnomalyChannel
 var Result chan models.MessageNats
 var KillsignalKafka chan string
 var KillsignalNats chan string
 func init() {
 	// queue of jobs
-	Jobs = make(chan string)
+	JobsChannelCfg = make(chan models.AnomalyChannel)
 
 	// done channel lấy ra kết quả của jobs
 	Result = make(chan models.MessageNats)
@@ -16,8 +16,8 @@ func init() {
 	KillsignalKafka = make(chan string)
 	KillsignalNats = make(chan string)
 }
-func PushJobToChannel(job string)  {
-	Jobs <- job
+func PushJobToChannel(job models.AnomalyChannel)  {
+	JobsChannelCfg <- job
 }
 func PushResultNatsKafka(result models.MessageNats)  {
 	Result <- result
@@ -34,11 +34,11 @@ func PollKillSignalChannelKafka() string {
 func PollKillSignalChannelNats() string {
 	return <- KillsignalNats
 }
-func PollJobChannelNatsKafka() string  {
-	return <- Jobs
+func PollJobChannelNatsKafka() models.AnomalyChannel  {
+	return <- JobsChannelCfg
 }
-func GetJobsChannel() chan string {
-	return Jobs
+func GetJobsChannel() chan models.AnomalyChannel {
+	return JobsChannelCfg
 }
 func GetResultChannel() chan models.MessageNats {
 	return Result

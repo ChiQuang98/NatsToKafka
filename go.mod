@@ -12,6 +12,7 @@ require (
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/nats-io/nats-server/v2 v2.2.6 // indirect
 	github.com/nats-io/nats.go v1.11.0
+	github.com/rmoff/ksqldb-go v0.0.0-20211008152944-96b738771aa4 // indirect
 	github.com/rs/cors v1.8.0 // indirect
 	github.com/silkeh/senml v0.0.0-20210422111947-b6df6a0d383f
 	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.7.0

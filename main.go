@@ -9,6 +9,7 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/golang/glog"
 	"github.com/nats-io/nats.go"
+	"github.com/rmoff/ksqldb-go"
 	"github.com/rs/cors"
 	"net/http"
 	"os"
@@ -59,18 +60,11 @@ func main() {
 	glog.Info("Init Redis database...")
 	//var channelsTmp []models.Channel
 	var wg sync.WaitGroup
-	//channelsTmp = append(channelsTmp,models.Channel{
-	//	Channel_id:   "039f3e5a-4f06-47b9-aca3-e4acbbf08b61",
-	//	Channel_name: "TestNatsQuang",
-	//	Thing_id:     "06e5b95a-73f5-4f31-a331-262cd79e4a9e",
-	//	Thing_key:    "f726b69e-63a3-4f89-ae67-819ebd541227",
-	//})
-	//channelsAtomic.channels = channelsTmp
-	//fmt.Println(len(channelsAtomic.channels))
 	//Nats
 	//servers := []string{"aiot-app01:31422", "aiot-app02:31422", "aiot-app03:31422"}
 	//servers := []string{"10.16.150.138:31422", "10.16.150.139:31422", "10.16.150.140:31422"}
 	nc, err := nats.Connect(setting.GetNatsInfo().Host,nats.ErrorHandler(natsErrHandler),nats.PingInterval(20*time.Second), nats.MaxPingsOutstanding(5))
+	clientKSQL := ksqldb.NewClient(fmt.Sprintf("http://%s",setting.GetKSQLInfo().Host),"","")
 	if err != nil {
 		glog.Error(err)
 	} else {
@@ -90,15 +84,14 @@ func main() {
 	killsignalKafka := workers.GetKillSignalChannelKafka()
 	killsignalNats:= workers.GetKillSignalChannelNats()
 	fmt.Println("Start")
-	//numberOfWorkers :=len(channelsAtomic.channels)
-	//numberOfWorkers :=1
 	wg.Add(1)
 	go func() {
 		for job:= range jobs{
-			glog.Error("a job created " + job)
-			wg.Add(2)
-			go workers.WorkerNats(job, job, result,nc,killsignalNats,&wg)
-			go workers.WorkerKafka(job,result,killsignalKafka)
+			glog.Error("a job created " + job.ChannelID)
+			wg.Add(3)
+			go workers.WorkerNats(job.ChannelID, job.ChannelID, result,nc,killsignalNats,&wg,clientKSQL)
+			go workers.WorkerKafkaProducer(job.ChannelID,result,killsignalKafka)
+			go workers.WorkerCreateStreamKSQL(job,clientKSQL)
 		}
 	}()
 	routerApi := routers.InitRoutes()

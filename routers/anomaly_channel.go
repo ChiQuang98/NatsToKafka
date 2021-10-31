@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func SetMcuRouter(router *mux.Router) *mux.Router {
+func SetChannelConfig(router *mux.Router) *mux.Router {
 	router.Handle("/anomalyconfig",
 		negroni.New(
 			negroni.HandlerFunc(controllers.AnomalyConfig),
