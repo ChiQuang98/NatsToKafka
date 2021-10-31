@@ -1,24 +1,32 @@
 package main
 
 import (
-	"NatsToKafka/models"
+	"NatsToKafka/routers"
+	"NatsToKafka/utils/setting"
 	"NatsToKafka/workers"
 	"flag"
 	"fmt"
+	"github.com/codegangsta/negroni"
 	"github.com/golang/glog"
 	"github.com/nats-io/nats.go"
+	"github.com/rs/cors"
+	"net/http"
 	"os"
+	"strconv"
 	"sync"
 	"time"
 )
+
 func init() {
+	//glog
+	//create logs folder
 	os.Mkdir("./logs", 0777)
 	flag.Lookup("stderrthreshold").Value.Set("[INFO|WARN|FATAL]")
 	flag.Lookup("logtostderr").Value.Set("false")
 	flag.Lookup("alsologtostderr").Value.Set("true")
 	flag.Lookup("log_dir").Value.Set("./logs")
-	glog.MaxSize = 1024 * 1024 * 256
-	flag.Lookup("v").Value.Set(fmt.Sprintf("%d", 8))
+	glog.MaxSize = 1024 * 1024 * setting.GetGlogConfig().MaxSize
+	flag.Lookup("v").Value.Set(fmt.Sprintf("%d", setting.GetGlogConfig().V))
 	flag.Parse()
 }
 
@@ -42,46 +50,27 @@ func natsErrHandler(nc *nats.Conn, sub *nats.Subscription, natsErr error) {
 
 // Set the error handler when creating a connection.
 
-var channelsAtomic struct {
-	sync.Mutex
-	channels []models.Channel
-}
+//var channelsAtomic struct {
+//	sync.Mutex
+//	channels []models.Channel
+//}
 func main() {
-	var channelsTmp []models.Channel
+	flag.Parse()
+	glog.Info("Init Redis database...")
+	//var channelsTmp []models.Channel
 	var wg sync.WaitGroup
-
-	//================
-	//wg.Add(1)
-	//go func() {
-	//	var err error
-	//	channelsAtomic.Lock()
-	//	channelsTmp, err= utils.GetAllChannels()
-	//	channelsAtomic.channels = channelsTmp
-	//	channelsAtomic.Unlock()
-	//	if err !=nil{
-	//		glog.Error("fail to get all chanels")
-	//		return
-	//	}
-	//	wg.Done()
-	//	//time.Sleep(60*time.Second)
-	//}()
-	//wg.Wait()
-	//=======================
-
-	channelsTmp = append(channelsTmp,models.Channel{
-		Channel_id:   "ee92ff10-6625-4f4d-8186-0139e49c4569",
-		Channel_name: "TestNatsQuang",
-		Thing_id:     "2ec068ef-2e27-40e3-b70d-eb830f0a9eed",
-		Thing_key:    "0a341d2c-c61d-4286-bb2b-1d38540783be",
-	})
-	channelsAtomic.channels = channelsTmp
-	fmt.Println(len(channelsAtomic.channels))
+	//channelsTmp = append(channelsTmp,models.Channel{
+	//	Channel_id:   "039f3e5a-4f06-47b9-aca3-e4acbbf08b61",
+	//	Channel_name: "TestNatsQuang",
+	//	Thing_id:     "06e5b95a-73f5-4f31-a331-262cd79e4a9e",
+	//	Thing_key:    "f726b69e-63a3-4f89-ae67-819ebd541227",
+	//})
+	//channelsAtomic.channels = channelsTmp
+	//fmt.Println(len(channelsAtomic.channels))
 	//Nats
 	//servers := []string{"aiot-app01:31422", "aiot-app02:31422", "aiot-app03:31422"}
 	//servers := []string{"10.16.150.138:31422", "10.16.150.139:31422", "10.16.150.140:31422"}
-	nc, err := nats.Connect("10.16.150.132:4222",nats.ErrorHandler(natsErrHandler),nats.PingInterval(20*time.Second), nats.MaxPingsOutstanding(5))
-
-	//ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	nc, err := nats.Connect(setting.GetNatsInfo().Host,nats.ErrorHandler(natsErrHandler),nats.PingInterval(20*time.Second), nats.MaxPingsOutstanding(5))
 	if err != nil {
 		glog.Error(err)
 	} else {
@@ -93,31 +82,39 @@ func main() {
 	}
 	defer nc.Close()
 	// queue of jobs
-	jobs := make(chan string)
-
+	jobs := workers.GetJobsChannel()
 	// done channel lấy ra kết quả của jobs
-	result := make(chan models.MessageNats)
+	result := workers.GetResultChannel()
 	// số lượng worker trong pool
 	//vi` moi worker lam viec khong ket thuc, phai lang ng  he lien tuc nen so luong worker bang so luong channel
-	killsignal := make(chan bool)
+	killsignalKafka := workers.GetKillSignalChannelKafka()
+	killsignalNats:= workers.GetKillSignalChannelNats()
 	fmt.Println("Start")
-	numberOfWorkers :=len(channelsAtomic.channels)
+	//numberOfWorkers :=len(channelsAtomic.channels)
 	//numberOfWorkers :=1
-	for i := 0; i < numberOfWorkers; i++ {
-		wg.Add(1)
-		go workers.WorkerNats(jobs, i, result,nc,killsignal,&wg)
-		go workers.WorkerKafka(result,killsignal)
-	}
-	numberOfJobs := numberOfWorkers
-	fmt.Println("LEN CHAN: ", numberOfJobs)
-	//numberOfJobs := 1
-	for j := 0; j < numberOfJobs; j++ {
-		go func(j int) {
-			jobs <- "channels."+channelsAtomic.channels[j].Channel_id
-		}(j)
-	}
+	wg.Add(1)
+	go func() {
+		for job:= range jobs{
+			glog.Error("a job created " + job)
+			wg.Add(2)
+			go workers.WorkerNats(job, job, result,nc,killsignalNats,&wg)
+			go workers.WorkerKafka(job,result,killsignalKafka)
+		}
+	}()
+	routerApi := routers.InitRoutes()
+	nApi := negroni.Classic()
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedHeaders: []string{"*"},
+		AllowedMethods: []string{"DELETE", "PUT", "GET", "HEAD", "OPTIONS", "POST"},
+	})
+	nApi.Use(c)
+	nApi.UseHandler(routerApi)
+	listenTo := setting.GetRestfulApiHost()+":" + strconv.Itoa(setting.GetRestfulApiPort())
+	fmt.Println(listenTo)
+	wg.Add(1)
+	go http.ListenAndServe(listenTo,nApi)
 	wg.Wait()
-
 }
 
 

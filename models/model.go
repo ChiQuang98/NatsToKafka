@@ -1,7 +1,15 @@
 package models
 
-import "github.com/gogo/protobuf/proto"
-
+import (
+	"encoding/json"
+	"github.com/gogo/protobuf/proto"
+)
+type AnomalyChannel struct {
+	ID string `json:"id"`
+	ChannelID string `json:"channel_id"`
+	Option int `json:"option"`
+	Type int `json:"type"`
+}
 type TokenResponse struct {
 	Token string `json:"token"`
 }
@@ -16,7 +24,7 @@ type Channel struct {
 	Thing_key string `json:"thing_key"`
 }
 type JSONSenML struct {
-	Value string `json:"value"`
+	Valueksql json.RawMessage `json:"valueksql"`
 }
 type ResponseChannel struct {
 	Total int `json:"total"`
@@ -28,8 +36,8 @@ type ResponseChannel struct {
 
 }
 type MessageNats struct {
-	IdChannel string
-	MessageData string
+	IdChannel string `json:"id_channel,omitempty"`
+	MessageData []byte `json:"message_data,omitempty"`
 }
 type Message struct {
 	Channel              string   `protobuf:"bytes,1,opt,name=channel,proto3" json:"channel,omitempty"`
